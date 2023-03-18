@@ -6,7 +6,7 @@
 /*   By: ssadiki <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 11:58:30 by ssadiki           #+#    #+#             */
-/*   Updated: 2023/03/17 13:28:39 by ssadiki          ###   ########.fr       */
+/*   Updated: 2023/03/18 20:16:32 by ssadiki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,71 @@ BitcoinExchange::~BitcoinExchange()
 	std::cout << "BitcoinExchange: Destructor called!" << std::endl;
 }
 
-void	BitcoinExchange::setDate(char* date)
+void	BitcoinExchange::setDate(const std::string& date)
 {
-	/*str.copy(this->date, str.find('|'), 0);
-	if (!strptime(date, "%Y-%m-%d", &tm) || tm.tm_year <= -901)
-		std::cout << "Error: date is not valid!" << std::endl;*/
 	this->date.push_back(date);
+}
+
+const std::vector<std::string>&	BitcoinExchange::getDate(void) const
+{
+	return (this->date);
+}
+
+void	BitcoinExchange::setValue(const std::string& value)
+{
+	this->value.push_back(value);
+}
+
+const std::vector<std::string>&	BitcoinExchange::getValue(void) const
+{
+	return (this->value);
+}
+
+int	BitcoinExchange::to_int(const std::string& str)
+{
+	unsigned long	i = 0;
+	int	r = 0;
+
+	if (str.empty())
+		throw ("Error: value not valid!");
+	if (str[i] == '-')
+		throw ("Error: value is negative!");
+	while (str[i++] == ' ')
+		;
+	if (str[i] == '+')
+		i++;
+	while (i < str.size())
+	{
+		if (str[i] < '0' || str[i] > '9')
+			throw ("Error: value not valid!");
+	}
+	std::istringstream(str) >> r;
+	if (r > 1000)
+		throw ("Error: value out of range!");
+	return (r);
+}
+
+float	BitcoinExchange::to_float(const std::string& str)
+{
+	unsigned long		i = 0;
+	float	r = 0;
+
+	if (str.empty())
+		throw ("Error: value not valid!");
+	if (str[i] == '-')
+		throw ("Error: value is negative!");
+	while (str[i++] == ' ')
+		;
+	if (str[i] == '+')
+		i++;
+	while (i < str.size())
+	{
+		if ((str[i] < '0' || str[i] > '9') && str[i] != '.')
+			throw ("Error: value not valid!");
+		i++;
+	}
+	std::stringstream(str) >> r;
+	if (r > 1000)
+		throw ("Error: value out of range!");
+	return (r);
 }
