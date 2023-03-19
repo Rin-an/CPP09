@@ -6,7 +6,7 @@
 /*   By: ssadiki <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 11:58:30 by ssadiki           #+#    #+#             */
-/*   Updated: 2023/03/18 20:16:32 by ssadiki          ###   ########.fr       */
+/*   Updated: 2023/03/19 13:07:46 by ssadiki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,11 @@ void	BitcoinExchange::setValue(const std::string& value)
 	this->value.push_back(value);
 }
 
+void	BitcoinExchange::setData(const std::string& data)
+{
+	this->data.push_back(data);
+}
+
 const std::vector<std::string>&	BitcoinExchange::getValue(void) const
 {
 	return (this->value);
@@ -66,16 +71,17 @@ int	BitcoinExchange::to_int(const std::string& str)
 
 	if (str.empty())
 		throw ("Error: value not valid!");
+	while (str[i] == ' ')
+		i++;
 	if (str[i] == '-')
 		throw ("Error: value is negative!");
-	while (str[i++] == ' ')
-		;
 	if (str[i] == '+')
 		i++;
 	while (i < str.size())
 	{
 		if (str[i] < '0' || str[i] > '9')
 			throw ("Error: value not valid!");
+		i++;
 	}
 	std::istringstream(str) >> r;
 	if (r > 1000)
@@ -90,10 +96,10 @@ float	BitcoinExchange::to_float(const std::string& str)
 
 	if (str.empty())
 		throw ("Error: value not valid!");
+	while (str[i] == ' ')
+		i++;
 	if (str[i] == '-')
 		throw ("Error: value is negative!");
-	while (str[i++] == ' ')
-		;
 	if (str[i] == '+')
 		i++;
 	while (i < str.size())
