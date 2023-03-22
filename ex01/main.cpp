@@ -6,7 +6,7 @@
 /*   By: ssadiki <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 14:29:03 by ssadiki           #+#    #+#             */
-/*   Updated: 2023/03/19 17:47:34 by ssadiki          ###   ########.fr       */
+/*   Updated: 2023/03/22 13:49:51 by ssadiki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	main(int argc, char **argv)
 {
 	if (argc != 2)
-		return (std::cout << "Error." << std::endl, 1);
+		return (std::cout << "Error in args, please use double quotes." << std::endl, 1);
 	RPN	rpn;
 	try {
 		std::string	exp = argv[1];
