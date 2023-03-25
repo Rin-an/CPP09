@@ -6,7 +6,7 @@
 /*   By: ssadiki <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 11:58:30 by ssadiki           #+#    #+#             */
-/*   Updated: 2023/03/19 13:07:46 by ssadiki          ###   ########.fr       */
+/*   Updated: 2023/03/24 17:05:07 by ssadiki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,18 @@
 
 BitcoinExchange::BitcoinExchange()
 {
-	std::cout << "BitcoinExchange: Default constructor called!" << std::endl;
+	//	std::cout << "BitcoinExchange: Default constructor called!" << std::endl;
+}
+
+BitcoinExchange::BitcoinExchange(std::string file)
+{
+	setFile(file);
+	setData();
 }
 
 BitcoinExchange::BitcoinExchange(const BitcoinExchange &a)
 {
-	std::cout << "BitcoinExchange: Copy constructor called!" << std::endl;
+	//	std::cout << "BitcoinExchange: Copy constructor called!" << std::endl;
 	*this = a;
 }
 
@@ -27,89 +33,88 @@ BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange &a)
 {
 	if (this != &a)
 	{
-		std::cout << "BitcoinExchange: Copy assignment operator called!" << std::endl;
-		this->date = a.date;
-		this->value = a.value;
+		//std::cout << "BitcoinExchange: Copy assignment operator called!" << std::endl;
+		this->data = a.data;
 	}
 	return (*this);
 }
 
 BitcoinExchange::~BitcoinExchange()
 {
-	std::cout << "BitcoinExchange: Destructor called!" << std::endl;
+	//std::cout << "BitcoinExchange: Destructor called!" << std::endl;
 }
 
-void	BitcoinExchange::setDate(const std::string& date)
+void	BitcoinExchange::setFile(const std::string str)
 {
-	this->date.push_back(date);
+	file.open(str);
+	if (!file)
+		throw("Error: could not open input file.");
 }
 
-const std::vector<std::string>&	BitcoinExchange::getDate(void) const
+void	BitcoinExchange::setData(void)
 {
-	return (this->date);
-}
+	std::ifstream	ifs("data.csv");
+	std::string		date;
 
-void	BitcoinExchange::setValue(const std::string& value)
-{
-	this->value.push_back(value);
-}
-
-void	BitcoinExchange::setData(const std::string& data)
-{
-	this->data.push_back(data);
-}
-
-const std::vector<std::string>&	BitcoinExchange::getValue(void) const
-{
-	return (this->value);
-}
-
-int	BitcoinExchange::to_int(const std::string& str)
-{
-	unsigned long	i = 0;
-	int	r = 0;
-
-	if (str.empty())
-		throw ("Error: value not valid!");
-	while (str[i] == ' ')
-		i++;
-	if (str[i] == '-')
-		throw ("Error: value is negative!");
-	if (str[i] == '+')
-		i++;
-	while (i < str.size())
+	if (!ifs)
+		throw ("Error: could not open data file!");
+	std::string	str;
+	std::getline(ifs, str);
+	while (std::getline(ifs, str))
 	{
-		if (str[i] < '0' || str[i] > '9')
-			throw ("Error: value not valid!");
-		i++;
+		float	value;
+		std::stringstream	ss(str);
+		std::getline(ss, date, ',');
+		ss >> value;
+		this->data[date] = value;
 	}
-	std::istringstream(str) >> r;
-	if (r > 1000)
-		throw ("Error: value out of range!");
-	return (r);
+	ifs.close();
 }
 
-float	BitcoinExchange::to_float(const std::string& str)
+void	BitcoinExchange::parse(void)
 {
-	unsigned long		i = 0;
-	float	r = 0;
-
-	if (str.empty())
-		throw ("Error: value not valid!");
-	while (str[i] == ' ')
-		i++;
-	if (str[i] == '-')
-		throw ("Error: value is negative!");
-	if (str[i] == '+')
-		i++;
-	while (i < str.size())
+	if (!file.is_open())
+		throw("Error: no input file!");
+	struct tm	tm;
+	std::string	str;
+	std::getline(file, str);
+	while (std::getline(file, str))
 	{
-		if ((str[i] < '0' || str[i] > '9') && str[i] != '.')
-			throw ("Error: value not valid!");
-		i++;
+		if (str.empty()) {std::cout << "Error: empty line." << std::endl;}
+		else if (str.find('|') == std::string::npos || str.find('|') != str.rfind('|'))
+			std::cout << "Error: wrong content/delimiter!" << std::endl;
+		else
+		{
+			std::string			date;
+			float				value;
+			std::stringstream	ss(str);
+			std::getline(ss, date, '|');
+			if (!strptime(date.c_str(), "%Y-%m-%d", &tm) || tm.tm_year <= -901)
+				std::cout << "Error: date is not valid => " + date << std::endl;
+			else if ((str.substr(str.find('|') + 1)).empty())
+				std::cout << "Error : no value." << std::endl;
+			else
+			{
+				ss >> value;
+				if (value < 0)
+					std::cout << "Error: negative value." << std::endl;
+				else if (value > 1000)
+					std::cout << "Error: value out of limit." << std::endl;
+				else
+					exchangeRate(date, value);
+			}
+			ss.clear();
+		}
 	}
-	std::stringstream(str) >> r;
-	if (r > 1000)
-		throw ("Error: value out of range!");
-	return (r);
+	file.close();
+}
+
+void	BitcoinExchange::exchangeRate(std::string& date, float value)
+{
+	(void)value;
+	std::map<std::string, float>::iterator	it = data.lower_bound(date);
+	
+	if (it != data.begin())
+		--it;
+	std::cout << date << "=> " << value << " = " << value * (*it).second << std::endl;
 }

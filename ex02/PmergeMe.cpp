@@ -6,7 +6,7 @@
 /*   By: ssadiki <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 18:25:21 by ssadiki           #+#    #+#             */
-/*   Updated: 2023/03/21 20:35:24 by ssadiki          ###   ########.fr       */
+/*   Updated: 2023/03/25 14:14:12 by ssadiki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,17 @@
 PmergeMe::PmergeMe()
 {
 	//std::cout << "PmergeMe: Default constructor called!" << std::endl;
+}
+
+PmergeMe::PmergeMe(std::vector<std::string>& ar)
+{
+	for (std::vector<std::string>::iterator it = ar.begin(); it != ar.end(); ++it)
+	{
+		long n = std::strtol((*it).c_str(), NULL, 10);
+		if (n < 0)
+			throw ("Error");
+		arr.push_back(n);
+	}
 }
 
 PmergeMe::PmergeMe(const PmergeMe& a)
@@ -28,6 +39,7 @@ PmergeMe& PmergeMe::operator=(const PmergeMe& a)
 	if (this != &a)
 	{
 		//	std::cout << "PmergeMe: Copy assignment operator called!" << std::endl;
+		this->arr = a.arr;
 		this->l = a.l;
 		this->a = a.a;
 		this->b = a.b;
@@ -53,37 +65,16 @@ const std::deque<int>&	PmergeMe::getDeque(void) const
 	return (this->d);
 }
 
-void	PmergeMe::setList(int x)
+void	PmergeMe::setList(void)
 {
-	this->l.push_back(x);
+	for (std::vector<int>::iterator it = arr.begin(); it != arr.end(); ++it)	
+		this->l.push_back(*it);
 }
 
-void	PmergeMe::setDeque(int x)
+void	PmergeMe::setDeque(void)
 {
-	this->d.push_back(x);
-}
-
-int	PmergeMe::to_int(const std::string& str)
-{ 
-	unsigned long	i = 0;
-	int	r = 0;
-
-	if (str.empty())
-		throw ("Error");
-	while (str[i] == ' ')
-		i++;
-	if (str[i] == '-')
-		throw ("Error");
-	if (str[i] == '+')
-		i++;
-	while (i < str.size())
-	{
-		if (str[i] < '0' || str[i] > '9')
-			throw("Error");
-		i++;
-	}
-	std::stringstream(str) >> r;
-	return (r);
+	for (std::vector<int>::iterator it = arr.begin(); it != arr.end(); ++it)	
+		this->d.push_back(*it);
 }
 
 void	PmergeMe::insertSort(void)
@@ -142,7 +133,6 @@ void	PmergeMe::mergeSort(void)
 			else if (*it <= l.front())
 				l.insert(l.begin(), *it);
 		}
-	//	s = l.size();
 	}
 }
 
@@ -171,15 +161,7 @@ void	PmergeMe::insertQueusort(void)
 		tmp_d2.push_back(tmp_d2.front());
 		tmp_d2.pop_front();	
 	}
-	for (unsigned long i = 0; i < tmp_d1.size() - 1; i++)
-	{
-		int	tmp = tmp_d1[i];
-		if (tmp_d1[i] >= tmp_d1[i + 1])
-		{
-			tmp_d1[i] = tmp_d1[i + 1];
-			tmp_d1[i + 1] = tmp;	
-		}
-	}
+	std::sort(tmp_d1.begin(), tmp_d1.end());
 }
 
 void	PmergeMe::mergeQueusort(void)
@@ -188,32 +170,10 @@ void	PmergeMe::mergeQueusort(void)
 
 	while (!d.empty())
 		d.pop_back();
-/*	l.merge(a);
-	for (std::list<int>::iterator it = b.begin(); it != b.end(); ++it)
-	{
-		for (std::list<int>::iterator it2 = l.begin(); it2 != l.end();)
-		{
-			if (*it >= *it2++ && *it <= *(it2))
-			{
-				l.insert(it2, *it);
-				break;
-			}
-		}
-		if (s == l.size())
-		{
-			if (*it >= l.back())
-				l.insert(l.end(), *it);
-			else if (*it <= l.front())
-				l.insert(l.begin(), *it);
-		}
-		s = l.size();
-	}*/
 	d.assign(tmp_d1.begin(), tmp_d1.end());
 	for (std::deque<int>::iterator it = tmp_d2.begin(); it != tmp_d2.end(); ++it)
 	{
 		s = d.size();
-		std::cout << "--------------------------" << std::endl;
-		std::cout << "Insert: " << *it << std::endl;
 		for (std::deque<int>::iterator it2 = d.begin(); it2 != d.end();)
 		{
 			if (*it >= *it2++ && *it <= *(it2))
@@ -222,19 +182,12 @@ void	PmergeMe::mergeQueusort(void)
 				break;
 			}
 		}
-		std::cout << "s = " << s << ", new size = " << d.size() << std::endl;
 		if (s == d.size())
 		{
-			std::cout << "did it get here" << std::endl;
 			if (*it >= d.back())
 				d.insert(d.end(), *it);
 			else if (*it <= d.front())
 				d.insert(d.begin(), *it);
-		}
-	//	s = d.size();
-		for (unsigned long i = 0; i < d.size(); i++)
-		{
-			std::cout << d[i] << " " << std::endl;
 		}
 	}
 }

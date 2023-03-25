@@ -6,7 +6,7 @@
 /*   By: ssadiki <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 11:57:46 by ssadiki           #+#    #+#             */
-/*   Updated: 2023/03/19 14:33:22 by ssadiki          ###   ########.fr       */
+/*   Updated: 2023/03/25 10:43:12 by ssadiki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,22 @@
 #include <sstream>
 #include <string>
 #include <ctime>
-#include <vector>
+#include <cstdlib>
+#include <map>
 
 class BitcoinExchange{
-	std::vector<std::string>	date;
-	std::vector<std::string>	value;
-	std::vector<std::string>	data;
+	std::map<std::string, float>			data;
+	std::ifstream							file;
 	public:
-	    BitcoinExchange();
+	BitcoinExchange();
+		BitcoinExchange(std::string);
 	    BitcoinExchange(const BitcoinExchange &a);
 	    BitcoinExchange& operator=(const BitcoinExchange &a);
 	    ~BitcoinExchange();
-		void	setDate(const std::string&);
-		void	setValue(const std::string&);
-		void	setData(const std::string&);
-		const std::vector<std::string>& getDate(void) const;
-		const std::vector<std::string>&	getValue(void) const;
-		int		to_int(const std::string&);
-		float	to_float(const std::string&);
-		int		calculateBitcoin(int);
-		float	calculateBitcoin(float);
+		void	setData(void);
+		void	setFile(const std::string);
+		void	exchangeRate(std::string&, float);
+		void	parse(void);
 };
 
 #endif
