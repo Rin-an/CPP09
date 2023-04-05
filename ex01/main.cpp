@@ -6,7 +6,7 @@
 /*   By: ssadiki <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 14:29:03 by ssadiki           #+#    #+#             */
-/*   Updated: 2023/03/22 13:49:51 by ssadiki          ###   ########.fr       */
+/*   Updated: 2023/03/26 23:17:26 by ssadiki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ int	main(int argc, char **argv)
 	try {
 		std::string	exp = argv[1];
 		rpn.execute(exp);
+		if (rpn.getStack().size() != 1)
+			throw ("Expression is wrong");
 		std::cout << rpn.getResult() << std::endl;
 	}
 	catch (const char* str)

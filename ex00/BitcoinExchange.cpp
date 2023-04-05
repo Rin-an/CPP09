@@ -6,7 +6,7 @@
 /*   By: ssadiki <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 11:58:30 by ssadiki           #+#    #+#             */
-/*   Updated: 2023/03/24 17:05:07 by ssadiki          ###   ########.fr       */
+/*   Updated: 2023/03/28 10:57:06 by ssadiki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	BitcoinExchange::setData(void)
 	std::getline(ifs, str);
 	while (std::getline(ifs, str))
 	{
-		float	value;
+		double	value;
 		std::stringstream	ss(str);
 		std::getline(ss, date, ',');
 		ss >> value;
@@ -78,6 +78,8 @@ void	BitcoinExchange::parse(void)
 	struct tm	tm;
 	std::string	str;
 	std::getline(file, str);
+	if (str.compare("date | value") != 0)
+		throw ("Error: wrong formatting.");
 	while (std::getline(file, str))
 	{
 		if (str.empty()) {std::cout << "Error: empty line." << std::endl;}
@@ -86,7 +88,7 @@ void	BitcoinExchange::parse(void)
 		else
 		{
 			std::string			date;
-			float				value;
+			double				value;
 			std::stringstream	ss(str);
 			std::getline(ss, date, '|');
 			if (!strptime(date.c_str(), "%Y-%m-%d", &tm) || tm.tm_year <= -901)
@@ -109,12 +111,12 @@ void	BitcoinExchange::parse(void)
 	file.close();
 }
 
-void	BitcoinExchange::exchangeRate(std::string& date, float value)
+void	BitcoinExchange::exchangeRate(std::string& date, double value)
 {
 	(void)value;
-	std::map<std::string, float>::iterator	it = data.lower_bound(date);
+	std::map<std::string, double>::iterator	it = data.lower_bound(date);
 	
 	if (it != data.begin())
 		--it;
-	std::cout << date << "=> " << value << " = " << value * (*it).second << std::endl;
+	std::cout << std::setprecision(15) << date << "=> " << value << " = " << value * (*it).second << std::endl;
 }

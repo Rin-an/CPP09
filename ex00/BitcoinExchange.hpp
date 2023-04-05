@@ -6,7 +6,7 @@
 /*   By: ssadiki <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 11:57:46 by ssadiki           #+#    #+#             */
-/*   Updated: 2023/03/25 10:43:12 by ssadiki          ###   ########.fr       */
+/*   Updated: 2023/03/25 23:36:55 by ssadiki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include <map>
 
 class BitcoinExchange{
-	std::map<std::string, float>			data;
+	std::map<std::string, double>			data;
 	std::ifstream							file;
 	public:
 	BitcoinExchange();
@@ -31,7 +31,7 @@ class BitcoinExchange{
 	    ~BitcoinExchange();
 		void	setData(void);
 		void	setFile(const std::string);
-		void	exchangeRate(std::string&, float);
+		void	exchangeRate(std::string&, double);
 		void	parse(void);
 };
 

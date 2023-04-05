@@ -6,7 +6,7 @@
 /*   By: ssadiki <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 14:30:44 by ssadiki           #+#    #+#             */
-/*   Updated: 2023/03/25 13:55:29 by ssadiki          ###   ########.fr       */
+/*   Updated: 2023/03/26 23:23:33 by ssadiki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ RPN& RPN::operator=(const RPN& a)
     if (this != &a){
      //   std::cout << "RPN: Copy assignment operator called!" << std::endl;
 		this->s = a.s;
+		this->r = a.r;
     }
 	return (*this);
 }
@@ -72,7 +73,7 @@ void	RPN::executeOperation(char op)
 {
 	int	nb;
 
-	if (s.empty())
+	if (s.empty() || s.size() < 2)
 		throw ("Error");
 	nb = s.top();
 	s.pop();
@@ -83,7 +84,7 @@ void	RPN::executeOperation(char op)
 	else if (op == '*')
 		r = s.top() * nb;
 	else
-		r = s.top() / nb;
+		nb == 0 ? r = INT_MAX : (r = s.top() / nb);
 	s.pop();
 	s.push(r);
 }
